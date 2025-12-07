@@ -95,11 +95,14 @@ De acordo com o escopo definido pela instituição, o aplicativo contém **três
     - Botão para voltar (com reset automático dos campos)
 
 - **Funcionalidades Técnicas**:
-    - Cálculo automático do melhor combustível
+    - Cálculo automático do melhor combustível através da classe `FuelCalculator`
     - Validação de dados de entrada
     - Tema visual minimalista (preto e amarelo)
     - Material Design 3
     - Reset automático de campos ao voltar
+    - Código organizado com classes utilitárias e constantes centralizadas
+    - Padrão de código em inglês
+    - Testes unitários para validação da lógica de cálculo
 
 ### ❌ Fora do Escopo
 
@@ -203,6 +206,9 @@ De acordo com o escopo definido pela instituição, o aplicativo contém **três
 | RNF-03 | Aplicativo deve rodar em Android (mínimo SDK 24) | ✅ Implementado |
 | RNF-04 | Aplicativo deve ser visualmente agradável (tema preto e amarelo) | ✅ Implementado |
 | RNF-05 | Código organizado e bem estruturado | ✅ Implementado |
+| RNF-10 | Código limpo sem duplicações | ✅ Implementado |
+| RNF-11 | Padrão de código em inglês | ✅ Implementado |
+| RNF-12 | Testes unitários implementados | ✅ Implementado |
 | RNF-06 | Uso de Material Design 3 | ✅ Implementado |
 | RNF-07 | Validação de dados com feedback visual | ✅ Implementado |
 | RNF-08 | Navegação fluida entre telas | ✅ Implementado |
@@ -236,6 +242,11 @@ De acordo com o escopo definido pela instituição, o aplicativo contém **três
 - **Persistência:** Nenhuma (versão atual)
 - **Versionamento:** Git + GitHub
 - **Arquitetura:** Activities (padrão Android)
+- **Classes Utilitárias:** 
+  - `FuelCalculator` - Lógica de cálculo centralizada
+  - `Constants` - Constantes centralizadas
+- **Padrão de Código:** Variáveis e funções em inglês
+- **Testes:** JUnit para testes unitários
 
 ---
 

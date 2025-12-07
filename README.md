@@ -85,9 +85,11 @@ O **Roda Mais** é um aplicativo desenvolvido em Kotlin que ajuda motoristas a t
 - **Navegação entre Activities**: Uso de `Intent` e `startActivityForResult`
 - **Validação de Dados**: Verificação de campos obrigatórios e valores numéricos
 - **Feedback Visual**: Mensagens de erro nos campos e Snackbar para erros gerais
-- **Cálculo Matemático**: Cálculo preciso de custo por km rodado
+- **Cálculo Matemático**: Cálculo preciso de custo por km rodado através da classe `FuelCalculator`
 - **Reset de Interface**: Limpeza automática de campos ao voltar da tela de resultados
 - **Tratamento de Eventos**: `setOnClickListener` para interações do usuário
+- **Arquitetura Limpa**: Código organizado com classes utilitárias e constantes centralizadas
+- **Padrão de Código**: Todas as variáveis e funções em inglês seguindo boas práticas
 
 ---
 
@@ -178,7 +180,9 @@ RodaMais/
 │   │   │   ├── java/com/bluestash/rodamais/
 │   │   │   │   ├── MainActivity.kt          # Tela principal com formulário
 │   │   │   │   ├── SelectFuelActivity.kt    # Tela de seleção de combustível
-│   │   │   │   └── ResultActivity.kt        # Tela de resultados
+│   │   │   │   ├── ResultActivity.kt        # Tela de resultados
+│   │   │   │   ├── FuelCalculator.kt        # Classe utilitária para cálculos
+│   │   │   │   └── Constants.kt            # Constantes centralizadas
 │   │   │   ├── res/
 │   │   │   │   ├── layout/                  # Layouts XML
 │   │   │   │   │   ├── activity_main.xml
@@ -275,6 +279,8 @@ O APK estará em: `app/build/outputs/apk/debug/app-debug.apk`
 O projeto inclui estrutura para testes:
 
 - **Testes Unitários**: `app/src/test/`
+  - `FuelCalculatorTest.kt` - Testes da lógica de cálculo
+  - `ExampleUnitTest.kt` - Testes básicos
 - **Testes de Instrumentação**: `app/src/androidTest/`
 
 Para executar os testes:
@@ -286,6 +292,15 @@ Para executar os testes:
 # Testes de instrumentação
 ./gradlew connectedAndroidTest
 ```
+
+### Cobertura de Testes
+
+Os testes cobrem:
+- ✅ Cálculo de custo por km
+- ✅ Comparação de combustíveis
+- ✅ Cálculo de diferença e percentual de economia
+- ✅ Validação de dados
+- ✅ Casos extremos (valores vazios, valores inválidos)
 
 ---
 
@@ -344,7 +359,10 @@ Este projeto foi desenvolvido como trabalho acadêmico para a UTFPR.
 - ✅ Validação de dados funcionando
 - ✅ Interface responsiva e moderna
 - ✅ Documentação completa (README + PRD)
-- ✅ Testes estruturados
+- ✅ Testes estruturados e funcionais
+- ✅ Código limpo e organizado (sem duplicações)
+- ✅ Padrão de código em inglês
+- ✅ Arquitetura com classes utilitárias (`FuelCalculator`, `Constants`)
 
 ---
 

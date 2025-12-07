@@ -8,76 +8,63 @@ import androidx.appcompat.app.AppCompatActivity
 
 class ResultActivity : AppCompatActivity() {
 
-    private lateinit var tvValores: TextView
-    private lateinit var tvRecomendacao: TextView
-    private lateinit var btnVoltar: MaterialButton
+    private lateinit var tvValues: TextView
+    private lateinit var tvRecommendation: TextView
+    private lateinit var btnBack: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result)
 
-        tvValores = findViewById(R.id.tvValores)
-        tvRecomendacao = findViewById(R.id.tvRecomendacao)
-        btnVoltar = findViewById(R.id.btnVoltar)
+        tvValues = findViewById(R.id.tvValores)
+        tvRecommendation = findViewById(R.id.tvRecomendacao)
+        btnBack = findViewById(R.id.btnVoltar)
 
-        val combustivel1 = intent.getStringExtra("COMBUSTIVEL1") ?: ""
-        val combustivel2 = intent.getStringExtra("COMBUSTIVEL2") ?: ""
-        val consumo1 = intent.getDoubleExtra("CONSUMO1", 0.0)
-        val consumo2 = intent.getDoubleExtra("CONSUMO2", 0.0)
-        val valor1 = intent.getDoubleExtra("VALOR1", 0.0)
-        val valor2 = intent.getDoubleExtra("VALOR2", 0.0)
+        val fuel1 = intent.getStringExtra(Constants.IntentKeys.FUEL1) ?: ""
+        val fuel2 = intent.getStringExtra(Constants.IntentKeys.FUEL2) ?: ""
+        val consumption1 = intent.getDoubleExtra(Constants.IntentKeys.CONSUMPTION1, Constants.DefaultValues.INVALID_CONSUMPTION)
+        val consumption2 = intent.getDoubleExtra(Constants.IntentKeys.CONSUMPTION2, Constants.DefaultValues.INVALID_CONSUMPTION)
+        val price1 = intent.getDoubleExtra(Constants.IntentKeys.PRICE1, Constants.DefaultValues.INVALID_PRICE)
+        val price2 = intent.getDoubleExtra(Constants.IntentKeys.PRICE2, Constants.DefaultValues.INVALID_PRICE)
 
-        // Calcular custo por km
-        //val custoPorKm1 = valor1 / consumo1
-        val custoPorKm1 = if(consumo1 > 0) valor1 / consumo1 else 0.0
-        //val custoPorKm2 = valor2 / consumo2
-        val custoPorKm2 = if(consumo2 > 0) valor2 / consumo2 else 0.0
+        val costPerKm1 = FuelCalculator.calculateCostPerKm(price1, consumption1)
+        val costPerKm2 = FuelCalculator.calculateCostPerKm(price2, consumption2)
 
-        tvValores.text = buildString {
-            append("$combustivel1:\n")
-            append("  Preço: R$ %.2f/L\n".format(valor1))
-            append("  Consumo: %.2f km/L\n".format(consumo1))
-            append("  Custo/km: R$ %.4f\n\n".format(custoPorKm1))
-            append("$combustivel2:\n")
-            append("  Preço: R$ %.2f/L\n".format(valor2))
-            append("  Consumo: %.2f km/L\n".format(consumo2))
-            append("  Custo/km: R$ %.4f".format(custoPorKm2))
+        tvValues.text = buildString {
+            append("$fuel1:\n")
+            append("  Preço: R$ %.2f/L\n".format(price1))
+            append("  Consumo: %.2f km/L\n".format(consumption1))
+            append("  Custo/km: R$ %.4f\n\n".format(costPerKm1))
+            append("$fuel2:\n")
+            append("  Preço: R$ %.2f/L\n".format(price2))
+            append("  Consumo: %.2f km/L\n".format(consumption2))
+            append("  Custo/km: R$ %.4f".format(costPerKm2))
         }
 
-        val recomendacao = calcularMelhorCombustivel(
-            combustivel1, combustivel2, 
-            custoPorKm1, custoPorKm2
-        )
-        tvRecomendacao.text = recomendacao
-
-        btnVoltar.setOnClickListener {
-            // Retornar resultado para indicar que deve resetar os campos
-            setResult(Activity.RESULT_OK)
-            finish() // volta para a tela anterior
-        }
-    }
-
-    private fun calcularMelhorCombustivel(
-        combustivel1: String, 
-        combustivel2: String,
-        custoPorKm1: Double, 
-        custoPorKm2: Double
-    ): String {
-        val diferenca = kotlin.math.abs(custoPorKm1 - custoPorKm2)
-        val percentualEconomia = (diferenca / kotlin.math.max(custoPorKm1, custoPorKm2)) * 100
+        val comparison = FuelCalculator.compareFuels(costPerKm1, costPerKm2)
+        val difference = FuelCalculator.calculateDifference(costPerKm1, costPerKm2)
+        val maxCost = kotlin.math.max(costPerKm1, costPerKm2)
+        val savingsPercentage = FuelCalculator.calculateSavingsPercentage(difference, maxCost)
         
-        return if (custoPorKm1 < custoPorKm2) {
-            buildString {
-                append("$combustivel1 é mais econômico!\n")
-                append("Economia de R$ %.4f por km\n".format(diferenca))
-                append("(%.1f%% mais barato)".format(percentualEconomia))
+        val recommendation = when (comparison) {
+            1 -> buildString {
+                append("$fuel1 é mais econômico!\n")
+                append("Economia de R$ %.4f por km\n".format(difference))
+                append("(%.1f%% mais barato)".format(savingsPercentage))
             }
-        } else {
-            buildString {
-                append("$combustivel2 é mais econômico!\n")
-                append("Economia de R$ %.4f por km\n".format(diferenca))
-                append("(%.1f%% mais barato)".format(percentualEconomia))
+            2 -> buildString {
+                append("$fuel2 é mais econômico!\n")
+                append("Economia de R$ %.4f por km\n".format(difference))
+                append("(%.1f%% mais barato)".format(savingsPercentage))
             }
+            else -> "Os dois combustíveis têm o mesmo custo por km"
+        }
+        
+        tvRecommendation.text = recommendation
+
+        btnBack.setOnClickListener {
+            setResult(Activity.RESULT_OK)
+            finish()
         }
     }
 }
