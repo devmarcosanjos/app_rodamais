@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Cores base -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta de cores - Tema Preto e Amarelo Minimalista -->
+    <color name="primary">#FFC107</color> <!-- Amarelo -->
+    <color name="primary_dark">#FFA000</color> <!-- Amarelo Escuro -->
+    <color name="primary_light">#FFD54F</color> <!-- Amarelo Claro -->
+
+    <color name="secondary">#FFC107</color>
+    <color name="secondary_dark">#FFA000</color>
+
+    <!-- Superfícies em preto -->
+    <color name="surface">#1A1A1A</color> <!-- Preto suave para cards -->
+    <color name="surface_variant">#121212</color> <!-- Preto mais escuro -->
+    <color name="background">#000000</color> <!-- Preto puro -->
+
+    <color name="on_primary">#000000</color> <!-- Preto para contraste com amarelo -->
+    <color name="on_secondary">#000000</color>
+    <color name="on_surface">#FFC107</color> <!-- Amarelo sobre superfície preta -->
+    <color name="on_background">#FFC107</color> <!-- Amarelo sobre fundo preto -->
+
+    <!-- Cores de estado -->
+    <color name="success">#FFC107</color>
+    <color name="error">#FF5252</color>
+    <color name="warning">#FFC107</color>
+    <color name="info">#FFC107</color>
+
+    <!-- Cores de texto - Amarelo -->
+    <color name="text_primary">#FFC107</color> <!-- Amarelo principal -->
+    <color name="text_secondary">#FFD54F</color> <!-- Amarelo claro -->
+    <color name="text_hint">#FFA000</color> <!-- Amarelo escuro para hints -->
+
+    <!-- Cores de borda - Amarelo -->
+    <color name="outline">#FFC107</color> <!-- Amarelo para bordas -->
+    <color name="outline_variant">#FFD54F</color> <!-- Amarelo claro para bordas -->
 </resources>
