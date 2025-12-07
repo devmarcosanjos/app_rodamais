@@ -8,42 +8,32 @@ import androidx.appcompat.app.AppCompatActivity
 
 class SelectFuelActivity : AppCompatActivity() {
 
-    private lateinit var btnGasolina: MaterialButton
-    private lateinit var btnAlcool: MaterialButton
-    private lateinit var btnDiesel: MaterialButton
-    private lateinit var btnVoltar: MaterialButton
-    private lateinit var cardGasolina: MaterialCardView
-    private lateinit var cardAlcool: MaterialCardView
+    private lateinit var btnBack: MaterialButton
+    private lateinit var cardGasoline: MaterialCardView
+    private lateinit var cardAlcohol: MaterialCardView
     private lateinit var cardDiesel: MaterialCardView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_fuel)
 
-        btnGasolina = findViewById(R.id.btnGasolina)
-        btnAlcool = findViewById(R.id.btnAlcool)
-        btnDiesel = findViewById(R.id.btnDiesel)
-        btnVoltar = findViewById(R.id.btnVoltar)
-        cardGasolina = findViewById(R.id.cardGasolina)
-        cardAlcool = findViewById(R.id.cardAlcool)
+        btnBack = findViewById(R.id.btnVoltar)
+        cardGasoline = findViewById(R.id.cardGasolina)
+        cardAlcohol = findViewById(R.id.cardAlcool)
         cardDiesel = findViewById(R.id.cardDiesel)
 
-        btnGasolina.setOnClickListener { retornarCombustivel("Gasolina") }
-        btnAlcool.setOnClickListener { retornarCombustivel("Álcool") }
-        btnDiesel.setOnClickListener { retornarCombustivel("Diesel") }
+        cardGasoline.setOnClickListener { returnFuel(Constants.FuelTypes.GASOLINE) }
+        cardAlcohol.setOnClickListener { returnFuel(Constants.FuelTypes.ALCOHOL) }
+        cardDiesel.setOnClickListener { returnFuel(Constants.FuelTypes.DIESEL) }
         
-        cardGasolina.setOnClickListener { retornarCombustivel("Gasolina") }
-        cardAlcool.setOnClickListener { retornarCombustivel("Álcool") }
-        cardDiesel.setOnClickListener { retornarCombustivel("Diesel") }
-        
-        btnVoltar.setOnClickListener {
+        btnBack.setOnClickListener {
             finish()
         }
     }
 
-    private fun retornarCombustivel(tipo: String) {
+    private fun returnFuel(type: String) {
         val resultIntent = intent
-        resultIntent.putExtra("COMBUSTIVEL", tipo)
+        resultIntent.putExtra(Constants.IntentKeys.FUEL, type)
         setResult(Activity.RESULT_OK, resultIntent)
         finish()
     }
