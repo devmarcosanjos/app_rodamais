@@ -13,62 +13,56 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var tvConsumo1: TextView
-    private lateinit var tvConsumo2: TextView
-    private lateinit var tilConsumo1: TextInputLayout
-    private lateinit var tilConsumo2: TextInputLayout
-    private lateinit var tilValor1: TextInputLayout
-    private lateinit var tilValor2: TextInputLayout
-    private lateinit var etConsumo1: TextInputEditText
-    private lateinit var etConsumo2: TextInputEditText
-    private lateinit var etValor1: TextInputEditText
-    private lateinit var etValor2: TextInputEditText
-    private lateinit var btnBuscar1: ImageButton
-    private lateinit var btnBuscar2: ImageButton
-    private lateinit var btnCalcular: MaterialButton
+    private lateinit var tvConsumption1: TextView
+    private lateinit var tvConsumption2: TextView
+    private lateinit var tilConsumption1: TextInputLayout
+    private lateinit var tilConsumption2: TextInputLayout
+    private lateinit var tilPrice1: TextInputLayout
+    private lateinit var tilPrice2: TextInputLayout
+    private lateinit var etConsumption1: TextInputEditText
+    private lateinit var etConsumption2: TextInputEditText
+    private lateinit var etPrice1: TextInputEditText
+    private lateinit var etPrice2: TextInputEditText
+    private lateinit var btnSearch1: ImageButton
+    private lateinit var btnSearch2: ImageButton
+    private lateinit var btnCalculate: MaterialButton
     
-    private var combustivel1: String = ""
-    private var combustivel2: String = ""
-
-    companion object {
-        private const val REQUEST_COMBUSTIVEL_1 = 1
-        private const val REQUEST_COMBUSTIVEL_2 = 2
-        private const val REQUEST_RESULT = 3
-    }
+    private var fuel1: String = ""
+    private var fuel2: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        tvConsumo1 = findViewById(R.id.tvConsumo1)
-        tvConsumo2 = findViewById(R.id.tvConsumo2)
-        tilConsumo1 = findViewById(R.id.tilConsumo1)
-        tilConsumo2 = findViewById(R.id.tilConsumo2)
-        tilValor1 = findViewById(R.id.tilValor1)
-        tilValor2 = findViewById(R.id.tilValor2)
-        etConsumo1 = findViewById(R.id.etConsumo1)
-        etConsumo2 = findViewById(R.id.etConsumo2)
-        etValor1 = findViewById(R.id.etValor1)
-        etValor2 = findViewById(R.id.etValor2)
-        btnBuscar1 = findViewById(R.id.btnBuscar1)
-        btnBuscar2 = findViewById(R.id.btnBuscar2)
-        btnCalcular = findViewById(R.id.btnCalcular)
+        tvConsumption1 = findViewById(R.id.tvConsumo1)
+        tvConsumption2 = findViewById(R.id.tvConsumo2)
+        tilConsumption1 = findViewById(R.id.tilConsumo1)
+        tilConsumption2 = findViewById(R.id.tilConsumo2)
+        tilPrice1 = findViewById(R.id.tilValor1)
+        tilPrice2 = findViewById(R.id.tilValor2)
+        etConsumption1 = findViewById(R.id.etConsumo1)
+        etConsumption2 = findViewById(R.id.etConsumo2)
+        etPrice1 = findViewById(R.id.etValor1)
+        etPrice2 = findViewById(R.id.etValor2)
+        btnSearch1 = findViewById(R.id.btnBuscar1)
+        btnSearch2 = findViewById(R.id.btnBuscar2)
+        btnCalculate = findViewById(R.id.btnCalcular)
 
-        btnBuscar1.setOnClickListener {
-            abrirSelecaoCombustivel(REQUEST_COMBUSTIVEL_1)
+        btnSearch1.setOnClickListener {
+            openFuelSelection(Constants.RequestCodes.FUEL_1)
         }
 
-        btnBuscar2.setOnClickListener {
-            abrirSelecaoCombustivel(REQUEST_COMBUSTIVEL_2)
+        btnSearch2.setOnClickListener {
+            openFuelSelection(Constants.RequestCodes.FUEL_2)
         }
         
-        btnCalcular.setOnClickListener {
-            calcularMelhorCombustivel()
+        btnCalculate.setOnClickListener {
+            calculateBestFuel()
         }
     }
 
     @Suppress("DEPRECATION")
-    private fun abrirSelecaoCombustivel(requestCode: Int) {
+    private fun openFuelSelection(requestCode: Int) {
         val intent = Intent(this, SelectFuelActivity::class.java)
         startActivityForResult(intent, requestCode)
     }
@@ -78,148 +72,130 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
-            REQUEST_COMBUSTIVEL_1 -> {
+            Constants.RequestCodes.FUEL_1 -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val combustivel = data.getStringExtra("COMBUSTIVEL") ?: return
-                    combustivel1 = combustivel
-                    tvConsumo1.text = "Consumo | $combustivel"
+                    val fuel = data.getStringExtra(Constants.IntentKeys.FUEL) ?: return
+                    fuel1 = fuel
+                    tvConsumption1.text = "${Constants.InterfaceTexts.CONSUMPTION_PREFIX}$fuel"
                 }
             }
-            REQUEST_COMBUSTIVEL_2 -> {
+            Constants.RequestCodes.FUEL_2 -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val combustivel = data.getStringExtra("COMBUSTIVEL") ?: return
-                    combustivel2 = combustivel
-                    tvConsumo2.text = "Consumo | $combustivel"
+                    val fuel = data.getStringExtra(Constants.IntentKeys.FUEL) ?: return
+                    fuel2 = fuel
+                    tvConsumption2.text = "${Constants.InterfaceTexts.CONSUMPTION_PREFIX}$fuel"
                 }
             }
-            REQUEST_RESULT -> {
-                // Quando voltar da tela de resultado, resetar todos os campos
-                resetarCampos()
+            Constants.RequestCodes.RESULT -> {
+                resetFields()
             }
         }
     }
     
-    private fun calcularMelhorCombustivel() {
-        // Limpar erros anteriores
-        limparErros()
+    private fun calculateBestFuel() {
+        clearErrors()
         
-        // Validar campos
-        val consumo1Text = etConsumo1.text?.toString()?.trim() ?: ""
-        val consumo2Text = etConsumo2.text?.toString()?.trim() ?: ""
-        val valor1Text = etValor1.text?.toString()?.trim() ?: ""
-        val valor2Text = etValor2.text?.toString()?.trim() ?: ""
+        val consumption1Text = etConsumption1.text?.toString()?.trim() ?: ""
+        val consumption2Text = etConsumption2.text?.toString()?.trim() ?: ""
+        val price1Text = etPrice1.text?.toString()?.trim() ?: ""
+        val price2Text = etPrice2.text?.toString()?.trim() ?: ""
         
-        var temErro = false
+        var hasError = false
         
-        if (combustivel1.isEmpty() || combustivel2.isEmpty()) {
-            mostrarErro("Selecione os dois tipos de combustível")
+        if (fuel1.isEmpty() || fuel2.isEmpty()) {
+            showError(Constants.Messages.SELECT_TWO_FUELS)
             return
         }
         
-        if (consumo1Text.isEmpty()) {
-            tilConsumo1.error = "Campo obrigatório"
-            temErro = true
+        if (consumption1Text.isEmpty()) {
+            tilConsumption1.error = Constants.Messages.REQUIRED_FIELD
+            hasError = true
         } else {
-            val consumo1 = consumo1Text.toDoubleOrNull()
-            if (consumo1 == null || consumo1 <= 0) {
-                tilConsumo1.error = "Valor inválido"
-                temErro = true
+            val consumption1 = consumption1Text.toDoubleOrNull()
+            if (consumption1 == null || consumption1 <= 0) {
+                tilConsumption1.error = Constants.Messages.INVALID_VALUE
+                hasError = true
             }
         }
         
-        if (consumo2Text.isEmpty()) {
-            tilConsumo2.error = "Campo obrigatório"
-            temErro = true
+        if (consumption2Text.isEmpty()) {
+            tilConsumption2.error = Constants.Messages.REQUIRED_FIELD
+            hasError = true
         } else {
-            val consumo2 = consumo2Text.toDoubleOrNull()
-            if (consumo2 == null || consumo2 <= 0) {
-                tilConsumo2.error = "Valor inválido"
-                temErro = true
+            val consumption2 = consumption2Text.toDoubleOrNull()
+            if (consumption2 == null || consumption2 <= 0) {
+                tilConsumption2.error = Constants.Messages.INVALID_VALUE
+                hasError = true
             }
         }
         
-        if (valor1Text.isEmpty()) {
-            tilValor1.error = "Campo obrigatório"
-            temErro = true
+        if (price1Text.isEmpty()) {
+            tilPrice1.error = Constants.Messages.REQUIRED_FIELD
+            hasError = true
         } else {
-            val valor1 = valor1Text.toDoubleOrNull()
-            if (valor1 == null || valor1 <= 0) {
-                tilValor1.error = "Valor inválido"
-                temErro = true
+            val price1 = price1Text.toDoubleOrNull()
+            if (price1 == null || price1 <= 0) {
+                tilPrice1.error = Constants.Messages.INVALID_VALUE
+                hasError = true
             }
         }
         
-        if (valor2Text.isEmpty()) {
-            tilValor2.error = "Campo obrigatório"
-            temErro = true
+        if (price2Text.isEmpty()) {
+            tilPrice2.error = Constants.Messages.REQUIRED_FIELD
+            hasError = true
         } else {
-            val valor2 = valor2Text.toDoubleOrNull()
-            if (valor2 == null || valor2 <= 0) {
-                tilValor2.error = "Valor inválido"
-                temErro = true
+            val price2 = price2Text.toDoubleOrNull()
+            if (price2 == null || price2 <= 0) {
+                tilPrice2.error = Constants.Messages.INVALID_VALUE
+                hasError = true
             }
         }
         
-        if (temErro) {
+        if (hasError) {
             return
         }
         
-        val consumo1 = consumo1Text.toDouble()
-        val consumo2 = consumo2Text.toDouble()
-        val valor1 = valor1Text.toDouble()
-        val valor2 = valor2Text.toDouble()
+        val consumption1 = consumption1Text.toDouble()
+        val consumption2 = consumption2Text.toDouble()
+        val price1 = price1Text.toDouble()
+        val price2 = price2Text.toDouble()
         
-        // Navegar para ResultActivity
         val intent = Intent(this, ResultActivity::class.java)
-        intent.putExtra("COMBUSTIVEL1", combustivel1)
-        intent.putExtra("COMBUSTIVEL2", combustivel2)
-        intent.putExtra("CONSUMO1", consumo1)
-        intent.putExtra("CONSUMO2", consumo2)
-        intent.putExtra("VALOR1", valor1)
-        intent.putExtra("VALOR2", valor2)
-        startActivityForResult(intent, REQUEST_RESULT)
+        intent.putExtra(Constants.IntentKeys.FUEL1, fuel1)
+        intent.putExtra(Constants.IntentKeys.FUEL2, fuel2)
+        intent.putExtra(Constants.IntentKeys.CONSUMPTION1, consumption1)
+        intent.putExtra(Constants.IntentKeys.CONSUMPTION2, consumption2)
+        intent.putExtra(Constants.IntentKeys.PRICE1, price1)
+        intent.putExtra(Constants.IntentKeys.PRICE2, price2)
+        startActivityForResult(intent, Constants.RequestCodes.RESULT)
     }
     
-    private fun limparErros() {
-        tilConsumo1.error = null
-        tilConsumo2.error = null
-        tilValor1.error = null
-        tilValor2.error = null
+    private fun clearErrors() {
+        tilConsumption1.error = null
+        tilConsumption2.error = null
+        tilPrice1.error = null
+        tilPrice2.error = null
     }
     
-    private fun mostrarErro(mensagem: String) {
-        Snackbar.make(findViewById(android.R.id.content), mensagem, Snackbar.LENGTH_LONG)
+    private fun showError(message: String) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
             .setBackgroundTint(getColor(R.color.error))
             .setTextColor(getColor(R.color.white))
             .show()
     }
     
-    private fun resetarCampos() {
-        // Limpar textos dos campos
-        etConsumo1.text?.clear()
-        etConsumo2.text?.clear()
-        etValor1.text?.clear()
-        etValor2.text?.clear()
+    private fun resetFields() {
+        etConsumption1.text?.clear()
+        etConsumption2.text?.clear()
+        etPrice1.text?.clear()
+        etPrice2.text?.clear()
         
-        // Limpar erros
-        limparErros()
+        clearErrors()
         
-        // Resetar textos dos títulos
-        tvConsumo1.text = "Combustível 1"
-        tvConsumo2.text = "Combustível 2"
+        tvConsumption1.text = Constants.InterfaceTexts.FUEL_1
+        tvConsumption2.text = Constants.InterfaceTexts.FUEL_2
         
-        // Resetar variáveis de combustível
-        combustivel1 = ""
-        combustivel2 = ""
-        
-        // Reabilitar campos e botões
-        etConsumo1.isEnabled = true
-        etConsumo2.isEnabled = true
-        btnBuscar1.isEnabled = true
-        btnBuscar2.isEnabled = true
-        etConsumo1.alpha = 1.0f
-        etConsumo2.alpha = 1.0f
-        btnBuscar1.alpha = 1.0f
-        btnBuscar2.alpha = 1.0f
+        fuel1 = ""
+        fuel2 = ""
     }
 }
